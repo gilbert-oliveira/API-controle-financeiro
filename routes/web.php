@@ -11,26 +11,32 @@ $router->get('/', function () use ($router) {
  * Grupo de rotas para receitas.
  */
 $router->group(['prefix' => 'receitas'], function () use ($router) {
-    $router->post('', 'RevenueController@store');
 
-    $router->get('', 'RevenueController@index');
-    $router->get('{id}', 'RevenueController@show');
+    $router->get('', ['as' => 'revenue.index', 'uses' => 'RevenueController@index']);
+    $router->get('{id}', ['as' => 'revenue.show', 'uses' => 'RevenueController@show']);
 
-    $router->put('{id}', 'RevenueController@update');
+    $router->post('', ['as' => 'revenue.store', 'uses' => 'RevenueController@store']);
 
-    $router->delete('{id}', 'RevenueController@destroy');
+    $router->put('{id}', ['as' => 'revenue.update', 'uses' => 'RevenueController@update']);
+
+    $router->delete('{id}', ['as' => 'revenue.destroy', 'uses' => 'RevenueController@destroy']);
 });
 
 /**
  * Grupo de rotas para despesas.
  */
 $router->group(['prefix' => 'despesas'], function () use ($router) {
-    $router->post('', 'RevenueController@store');
 
-    $router->get('', 'RevenueController@index');
-    $router->get('{id}', 'RevenueController@show');
+    $router->get('', ['as' => 'expense.index', 'uses' => 'ExpenseController@index']);
+    $router->get('{id}', ['as' => 'expense.show', 'uses' => 'ExpenseController@show']);
 
-    $router->put('{id}', 'RevenueController@update');
+    $router->post('', ['as' => 'expense.store', 'uses' => 'ExpenseController@store']);
 
-    $router->delete('{id}', 'RevenueController@destroy');
+    $router->put('{id}', ['as' => 'expense.update', 'uses' => 'ExpenseController@update']);
+
+    $router->delete('{id}', ['as' => 'expense.destroy', 'uses' => 'ExpenseController@destroy']);
+});
+
+$router->get('teste', function () {
+    return true;
 });

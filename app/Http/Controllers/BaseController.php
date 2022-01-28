@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 
 abstract class BaseController extends Controller
 {
-    protected string $class;
+    protected Model $model;
     protected string $resorceName;
 
-    public function index(): JsonResponse
+    public function index()
     {
-        return response()->json($this->class::all());
+        return response()->json($this->model->all());
     }
 
     public function store(Request $request): JsonResponse
@@ -22,7 +24,7 @@ abstract class BaseController extends Controller
         $this->validateResource($request);
 
         // Cadastra o recurso.
-        $revenue = $this->class::create($request->all());
+        $revenue = $this->model::create($request->all());
 
         // Retorna o recurso cadatrado com o código de criado (201).
         return response()->json($revenue, 201);
@@ -30,7 +32,7 @@ abstract class BaseController extends Controller
 
     public function show($id): JsonResponse
     {
-        $revenue = $this->class::find($id);
+        $revenue = $this->model::find($id);
 
         if (is_null($revenue)) {
             return response()->json('', 204);
@@ -41,7 +43,7 @@ abstract class BaseController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $revenue = $this->class::find($id);
+        $revenue = $this->model::find($id);
 
         if (is_null($revenue)) {
             return response()->json([
@@ -59,7 +61,7 @@ abstract class BaseController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $qtdRemoved = $this->class::destroy($id);
+        $qtdRemoved = $this->model::destroy($id);
 
         if ($qtdRemoved === 0) {
             return response()->json([
@@ -81,37 +83,40 @@ abstract class BaseController extends Controller
     protected function validateResource(Request $request, int $id = null)
     {
         $this->validate($request, [
-            'description' => [
+            'date' => [
+                'bail',
                 'required',
-                Rule::unique('revenues')->where(function ($query) {
+                'date'
+            ],
+            'description' => [
+                'bail',
+                'required',
+                Rule::unique($this->model->getTable())->where(function ($query) {
                     return $query->whereBetween('date', $this->getDateBeteween(\request()->date));
                 })->ignore($id)
             ],
             'value' => [
                 'required',
             ],
-            'date' => [
-                'required',
-                'date'
-            ],
         ], [
             'description.required' => "Por favor. Informe a descrição da $this->resorceName!",
             'description.unique' => 'Descrição já cadatrada para o mês informado!',
 
-            'value.required' => "Por favor. Informe o valor da $this->resorceName.",
+            'value.required' => "Por favor. Informe o valor da $this->resorceName!",
 
-            'date.required' => "Por favor. Informe a data da $this->resorceName.",
+            'date.required' => "Por favor. Informe a data da $this->resorceName!",
             'date.date' => "Por favor. Informe uma data no formato 2022-12-30"
         ]);
     }
 
     /**
      * Método para extrair o primeiro e último dia do mês.
-     * @param string $date Data a ser extraido o primeiro e último dia do mês.
+     * @param string|null $date Data a ser extraido o primeiro e último dia do mês.
      * @return array  Array com a primeira e última data do mês.
      */
-    private function getDateBeteween(string $date): array
+    private function getDateBeteween(string $date = null): array
     {
+
         return [
             // Recupera a data com o primeiro dia do mês.
             date("Y-m-01", strtotime($date)),

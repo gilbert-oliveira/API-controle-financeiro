@@ -10,9 +10,9 @@ class RevenueController extends BaseController
     public function __construct()
     {
         // Define a clase a ser utilizada pelo BasController.
-        $this->class = Revenue::class;
+        $this->model = new Revenue();
 
-        // Define o nome do recurso a ser utilizada=o pelo BasController.
+        // Define o nome do recurso a ser utilizado pelo BasController.
         $this->resorceName = 'receita';
     }
 }

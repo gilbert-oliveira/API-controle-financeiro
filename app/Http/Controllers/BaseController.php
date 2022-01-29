@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
@@ -16,6 +15,18 @@ abstract class BaseController extends Controller
 
     public function index()
     {
+        if (request()->query('descricao')) {
+
+            $description = request()->query('descricao');
+            $resources = $this->model::where('description', 'like', "%{$description}%")->get();
+
+            if (!count($resources)) {
+                return response()->json('', 204);
+            }
+
+            return response()->json($resources);
+        }
+
         return response()->json($this->model->all());
     }
 
@@ -24,39 +35,39 @@ abstract class BaseController extends Controller
         $this->validateResource($request);
 
         // Cadastra o recurso.
-        $revenue = $this->model::create($request->all());
+        $resource = $this->model::create($request->all());
 
         // Retorna o recurso cadatrado com o código de criado (201).
-        return response()->json($revenue, 201);
+        return response()->json($this->model::find($resource->id), 201);
     }
 
     public function show($id): JsonResponse
     {
-        $revenue = $this->model::find($id);
+        $resource = $this->model::find($id);
 
-        if (is_null($revenue)) {
+        if (is_null($resource)) {
             return response()->json('', 204);
         }
 
-        return response()->json($revenue);
+        return response()->json($resource);
     }
 
     public function update(Request $request, $id): JsonResponse
     {
-        $revenue = $this->model::find($id);
+        $resource = $this->model::find($id);
 
-        if (is_null($revenue)) {
+        if (is_null($resource)) {
             return response()->json([
                 'error' => ucfirst($this->resorceName) . ' não encontrada!'
             ], 404);
         }
 
-        $this->validateResource($request, $revenue->id);
+        $this->validateResource($request, $resource->id);
 
-        $revenue->fill($request->all());
-        $revenue->save();
+        $resource->fill($request->all());
+        $resource->save();
 
-        return response()->json($revenue);
+        return response()->json($resource);
     }
 
     public function destroy($id): JsonResponse
@@ -98,6 +109,10 @@ abstract class BaseController extends Controller
             'value' => [
                 'required',
             ],
+            'category_id' => [
+                'nullable',
+                'exists:categories,id'
+            ],
         ], [
             'description.required' => "Por favor. Informe a descrição da $this->resorceName!",
             'description.unique' => 'Descrição já cadatrada para o mês informado!',
@@ -105,7 +120,9 @@ abstract class BaseController extends Controller
             'value.required' => "Por favor. Informe o valor da $this->resorceName!",
 
             'date.required' => "Por favor. Informe a data da $this->resorceName!",
-            'date.date' => "Por favor. Informe uma data no formato 2022-12-30"
+            'date.date' => "Por favor. Informe uma data no formato Y-m-d!",
+
+            'category_id.exists' => "Por favor. Informe uma categoria válida!"
         ]);
     }
 

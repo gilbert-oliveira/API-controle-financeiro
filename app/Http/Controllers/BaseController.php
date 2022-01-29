@@ -30,17 +30,6 @@ abstract class BaseController extends Controller
         return response()->json($this->model->all());
     }
 
-    public function store(Request $request): JsonResponse
-    {
-        $this->validateResource($request);
-
-        // Cadastra o recurso.
-        $resource = $this->model::create($request->all());
-
-        // Retorna o recurso cadatrado com o código de criado (201).
-        return response()->json($this->model::find($resource->id), 201);
-    }
-
     public function show($id): JsonResponse
     {
         $resource = $this->model::find($id);
@@ -50,6 +39,29 @@ abstract class BaseController extends Controller
         }
 
         return response()->json($resource);
+    }
+
+    public function showByMonth($year, $month): JsonResponse
+    {
+        $rangeDate = $this->getDateBeteween(date('Y-m-d', strtotime("$year-$month-1")));
+        $resources = $this->model::whereBetween('date', $rangeDate)->get();
+
+        if (!count($resources)) {
+            return response()->json('', 204);
+        }
+
+        return response()->json($resources);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $this->validateResource($request);
+
+        // Cadastra o recurso.
+        $resource = $this->model::create($request->all());
+
+        // Retorna o recurso cadatrado com o código de criado (201).
+        return response()->json($this->model::find($resource->id), 201);
     }
 
     public function update(Request $request, $id): JsonResponse

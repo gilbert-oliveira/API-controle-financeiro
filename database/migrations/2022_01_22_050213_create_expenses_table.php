@@ -18,6 +18,8 @@ class CreateExpensesTable extends Migration
             $table->string('description');
             $table->float('value', 12, 4);
             $table->date('date');
+            $table->unsignedBigInteger('category_id')->default(8);
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 

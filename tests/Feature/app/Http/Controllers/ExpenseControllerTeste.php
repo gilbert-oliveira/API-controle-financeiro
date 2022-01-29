@@ -15,9 +15,9 @@ class ExpenseControllerTeste extends TestCase
     public function testRetornaTodasAsDespesas()
     {
         Expense::factory()->count(10)->create();
-        $expenses = Expense::all();
 
         $this->get(route('expense.index'));
+        $expenses = Expense::all();
 
         $index = $this->response->content();
 
@@ -114,10 +114,12 @@ class ExpenseControllerTeste extends TestCase
         $payload = [
             'description' => "Nova Despesa",
             'value' => 100,
-            'date' => '2022-01-01'
+            'date' => '2022-01-01',
+            'category_id' => 1
         ];
 
         $this->post(route('expense.store'), $payload);
+
         $this->assertResponseStatus(201);
         $this->seeJson(Expense::find(1)->toArray());
     }
@@ -153,6 +155,15 @@ class ExpenseControllerTeste extends TestCase
 
         $this->put(route('expense.update', ['id' => 1]), [
             'description' => 'Despesa Teste',
+            'date' => '2022-13-01',
+            'value' => '120'
+        ]);
+
+        $this->assertResponseStatus(422);
+        $this->seeJson(["date" => ['Por favor. Informe uma data no formato Y-m-d!']]);
+
+        $this->put(route('expense.update', ['id' => 1]), [
+            'description' => 'Despesa Teste',
             'date' => '2022-01-01',
             'value' => 120
         ]);
@@ -165,6 +176,16 @@ class ExpenseControllerTeste extends TestCase
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ["Descrição já cadatrada para o mês informado!"]]);
+
+        $this->put(route('expense.update', ['id' => 2]), [
+            'description' => 'Despesa Teste',
+            'date' => '2022-5-20',
+            'value' => 120,
+            'category_id' => 9
+        ]);
+
+        $this->assertResponseStatus(422);
+        $this->seeJson(["category_id" => ["Por favor. Informe uma categoria válida!"]]);
     }
 
     public function testRetornaMensagemDeErroAoEditarDespesaComIdQueNaoExiste()

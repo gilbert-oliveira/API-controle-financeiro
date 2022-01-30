@@ -309,16 +309,16 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
     ```json
     [
       {
-        "id": "Id da receita",
-        "description": "Descrição da receita",
-        "value": "Valor da receita",
-        "date": "data da receita"
+        "id": "Id da despesa.",
+        "description": "Descrição da despesa.",
+        "value": "Valor da despesa.",
+        "date": "data da despesa."
       },
       {
-        "id": "Id da receita.",
-        "description": "Descrição da receita.",
-        "value": "Valor da receita.",
-        "date": "data da receita."
+        "id": "Id da despesa.",
+        "description": "Descrição da despesa.",
+        "value": "Valor da despesa.",
+        "date": "data da despesa."
       }
     ]
     ```

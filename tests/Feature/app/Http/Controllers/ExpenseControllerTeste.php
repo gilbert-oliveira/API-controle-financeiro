@@ -3,10 +3,13 @@
 namespace Feature\app\Http\Controllers;
 
 use App\Models\Expense;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Lumen\Testing\TestCase;
 
 class ExpenseControllerTeste extends TestCase
 {
+    use HasFactory;
+
     public function createApplication()
     {
         return require './bootstrap/app.php';
@@ -24,6 +27,52 @@ class ExpenseControllerTeste extends TestCase
         $this->assertResponseOk();
 
         $this->assertEquals($index, $expenses);
+    }
+
+    public function testRetornarDespesasPorDescricao()
+    {
+        Expense::factory()->count(10)->create();
+
+        $sub = substr(Expense::find(2)->description, 0, 3);
+        $resources = Expense::where('description', 'like', "%{$sub}%")->get();
+
+        $this->get("/despesas?descricao={$sub}");
+        $this->assertResponseOk();
+        $this->assertEquals(json_decode($resources), json_decode($this->response->content()));
+    }
+
+    public function testRetornaSemConteudoAoBuscarDespesaPorDescricaoQueNaoExiste()
+    {
+        Expense::factory()->count(10)->create();
+        $this->get("/despesas?descricao=abc123");
+
+        $this->assertResponseStatus(204);
+    }
+
+    public function testRetornaDespesasAoBuscarPorAnoEMes()
+    {
+
+        Expense::factory()->count(2)->create([
+            'date' => "2022-11-01"
+        ]);
+        Expense::factory()->count(2)->create([
+            'date' => "2022-10-01"
+        ]);
+        Expense::factory()->count(2)->create([
+            'date' => "2022-09-01"
+        ]);
+
+        $expected = Expense::where('date', '2022-11-01')->get();
+        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '11']));
+
+        $this->assertResponseOk();
+        $this->assertEquals($this->response->content(), $expected);
+    }
+
+    public function testRetornaSemConteudoAoBuscarDespesaPorAnoEMesQueNaoExiste()
+    {
+        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '12']));
+        $this->assertResponseStatus(204);
     }
 
     public function testRetornaErroAoBuscarDespesaPorIdQueNaoExiste()
@@ -126,9 +175,7 @@ class ExpenseControllerTeste extends TestCase
 
     public function testRetornaMensagensDeErroDasValidacoesAoEditar()
     {
-
         Expense::factory()->count(2)->create();
-
 
         $this->put(route('expense.update', ['id' => 1]), [
             'value' => 120,

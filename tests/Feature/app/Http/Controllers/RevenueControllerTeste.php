@@ -3,7 +3,6 @@
 namespace Feature\app\Http\Controllers;
 
 use App\Models\Revenue;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\TestCase;
 
 class RevenueControllerTeste extends TestCase
@@ -25,6 +24,61 @@ class RevenueControllerTeste extends TestCase
         $this->assertResponseOk();
 
         $this->assertEquals($index, $revenues);
+    }
+
+    public function testRetornarReceitasPorDescricao()
+    {
+        Revenue::factory()->count(10)->create();
+
+        $sub = substr(Revenue::find(2)->description, 0, 3);
+        $resources = Revenue::where('description', 'like', "%{$sub}%")->get();
+
+
+        $this->get("/receitas?descricao={$sub}");
+        $this->assertResponseOk();
+        $this->assertEquals(json_decode($resources), json_decode($this->response->content()));
+    }
+
+    public function testRetornaSemConteudoAoBuscarReceitaPorDescricaoQueNaoExiste()
+    {
+        Revenue::factory()->count(10)->create();
+        $this->get("/despesas?descricao=abc123");
+
+        $this->assertResponseStatus(204);
+    }
+
+    public function testRetornaReceitasAoBuscarPorAnoEMes()
+    {
+
+        Revenue::factory()->count(2)->create([
+            'date' => "2022-11-01"
+        ]);
+        Revenue::factory()->count(2)->create([
+            'date' => "2022-10-01"
+        ]);
+        Revenue::factory()->count(2)->create([
+            'date' => "2022-09-01"
+        ]);
+
+        $expected = Revenue::where('date', '2022-11-01')->get();
+        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '11']));
+
+        $this->assertResponseOk();
+        $this->assertEquals($this->response->content(), $expected);
+    }
+
+    public function testRetornaSemConteudoAoBuscarReceitaPorAnoEMesQueNaoExiste()
+    {
+        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '12']));
+        $this->assertResponseStatus(204);
+    }
+
+    public function testRetornaErroAoBuscarReceitaPorIdQueNaoExiste()
+    {
+        Revenue::factory()->count(10)->create();
+        $this->get(route('expense.show', ['id' => 11]));
+
+        $this->assertResponseStatus(204);
     }
 
     public function testRetornaErroAoBuscarRecitaPorIdQueNaoExiste()

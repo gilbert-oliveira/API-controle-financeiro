@@ -143,7 +143,7 @@ abstract class BaseController extends Controller
      * @param string|null $date Data a ser extraido o primeiro e último dia do mês.
      * @return array  Array com a primeira e última data do mês.
      */
-    private function getDateBeteween(string $date = null): array
+    protected function getDateBeteween(string $date = null): array
     {
 
         return [

@@ -12,6 +12,11 @@ class Expense extends Model
 
     public $timestamps = false;
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class)->first();
+    }
+
     protected $fillable = [
         'description',
         'value',

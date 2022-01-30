@@ -8,7 +8,8 @@
         "php": "^8.0",
         "laravel/lumen-framework": "^8.3.1",
       "ext-couchbase": "*",
-        "ext-http": "*"
+        "ext-http": "*",
+      "ext-mongodb": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

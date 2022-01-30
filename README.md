@@ -141,6 +141,30 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
     }
     ```
 
+### Buscar por Ano e Mês [GET]
+
++ API endopint
+    + `receitas/{ano}/{mes}`
++ Response 200 (application/json) <br/>
+    ```json
+    [
+      {
+        "id": "Id da receita",
+        "description": "Descrição da receita",
+        "value": "Valor da receita",
+        "date": "data da receita"
+      },
+      {
+        "id": "Id da receita.",
+        "description": "Descrição da receita.",
+        "value": "Valor da receita.",
+        "date": "data da receita."
+      }
+    ]
+    ```
++ Response 204 (application/json) <br/>
+  O body da resposta é retornada vazia.
+
 ### Detalhar [GET]
 
 + API endopint
@@ -277,6 +301,30 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
     }
     ```
 
+### Buscar por Ano e Mês [GET]
+
++ API endopint
+    + `despesas/{ano}/{mes}`
++ Response 200 (application/json) <br/>
+    ```json
+    [
+      {
+        "id": "Id da receita",
+        "description": "Descrição da receita",
+        "value": "Valor da receita",
+        "date": "data da receita"
+      },
+      {
+        "id": "Id da receita.",
+        "description": "Descrição da receita.",
+        "value": "Valor da receita.",
+        "date": "data da receita."
+      }
+    ]
+    ```
++ Response 204 (application/json) <br/>
+  O body da resposta é retornada vazia.
+
 ### Detalhar [GET]
 
 + API endopint
@@ -348,6 +396,38 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
     ```json
     {
       "error": "Despesa não encontrada!"
+    }
+    ```
+
+## Resumo Mensal [/resumo/{ano}/{mes}]
+
+O resumo do mês contem as seguintes informações:
+
+- Valor total das receitas no mês.
+- Valor total das despesas no mês.
+- Saldo final no mês.
+- Valor total gasto no mês em cada uma das categorias.
+
+### Listar [GET]
+
++ API endopint
+    + `despesas/{ano}/{mes}`
++ Response 200 (application/json) <br/>
+    ```json
+    {
+      "receitas": "Valor total de receitas",
+      "despesas": "Valor total de despesas",
+      "saldo": "Saldo (receitas - despesas)",
+      "gastos": {
+        "Alimentação": "Valor total",
+        "Saúde": "Valor total",
+        "Moradia": "Valor total",
+        "Transporte": "Valor total",
+        "Educação": "Valor total",
+        "Lazer": "Valor total",
+        "Imprevistos": "Valor total",
+        "Outras": "Valor total"
+      }
     }
     ```
 

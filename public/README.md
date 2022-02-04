@@ -13,13 +13,13 @@ Criar uma API Rest que faça o controle de Receitas e Despesas e gere relatório
 ## Demonstração
 
 Para testar as funcionalidades da api poderá ser utilizado o
-link <a heref="http://finances-control-api.gilbert.dev.br">http://finances-control-api.gilbert.dev.br </a> segunido os
+link <a heref="http://finances-control-api.gilbert.dev.br">http://finances-control-api.gilbert.dev.br </a> seguindo os
 padrões de endpoints da documentação!
 
 ## Dúvidas/Contato
 
 As dúvidas e solicitações, relacionadas ao acesso da API, devem ser enviadas para o
-e-mail <a href="mailto:suporte@gilbert.dev.br">suporte@gilbert.dev.br</a>
+e-mail <a href="mailto:suporte@gilbert.dev.br">suporte@gilbert.dev.br</a>.
 
 ### Configurando o projeto para produção
 

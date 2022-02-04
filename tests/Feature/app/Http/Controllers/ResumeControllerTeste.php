@@ -67,7 +67,16 @@ class ResumeControllerTeste extends TestCase
             return array_sum($e);
         }, $amounts);
 
-        $this->get(route('resume', ['year' => '2022', 'month' => '02']));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('resume', ['year' => '2022', 'month' => '02']), $header);
 
         $teste = json_encode([
             "receitas" => $amountRevenues,

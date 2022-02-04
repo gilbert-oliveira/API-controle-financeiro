@@ -13,13 +13,16 @@ class TokenController extends Controller
     {
         $this->validate($request, [
             'password' => [
-                'bail',
                 'required'
             ],
             'email' => [
                 'required',
                 'email'
             ]
+        ], [
+            'password.required' => 'Por favor. Informe uma senha!',
+            'email.required' => 'Por favor. Informe um e-mail!',
+            'email.email' => 'Por favor. Informe um e-mail válido!'
         ]);
 
         $user = User::where('email', $request->email)->first();

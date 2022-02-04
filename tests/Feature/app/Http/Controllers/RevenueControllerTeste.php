@@ -17,7 +17,16 @@ class RevenueControllerTeste extends TestCase
         Revenue::factory()->count(10)->create();
         $revenues = Revenue::all();
 
-        $this->get(route('revenue.index'));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('revenue.index'), $header);
 
         $index = $this->response->content();
 
@@ -33,8 +42,16 @@ class RevenueControllerTeste extends TestCase
         $sub = substr(Revenue::find(2)->description, 0, 3);
         $resources = Revenue::where('description', 'like', "%{$sub}%")->get();
 
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
 
-        $this->get("/receitas?descricao={$sub}");
+        $this->get("/receitas?descricao={$sub}", $header);
         $this->assertResponseOk();
         $this->assertEquals(json_decode($resources), json_decode($this->response->content()));
     }
@@ -42,7 +59,17 @@ class RevenueControllerTeste extends TestCase
     public function testRetornaSemConteudoAoBuscarReceitaPorDescricaoQueNaoExiste()
     {
         Revenue::factory()->count(10)->create();
-        $this->get("/despesas?descricao=abc123");
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get("/despesas?descricao=abc123", $header);
 
         $this->assertResponseStatus(204);
     }
@@ -61,7 +88,17 @@ class RevenueControllerTeste extends TestCase
         ]);
 
         $expected = Revenue::where('date', '2022-11-01')->get();
-        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '11']));
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '11']), $header);
 
         $this->assertResponseOk();
         $this->assertEquals($this->response->content(), $expected);
@@ -69,14 +106,33 @@ class RevenueControllerTeste extends TestCase
 
     public function testRetornaSemConteudoAoBuscarReceitaPorAnoEMesQueNaoExiste()
     {
-        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '12']));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('revenue.show-by-month', ['year' => '2022', 'month' => '12']), $header);
         $this->assertResponseStatus(204);
     }
 
     public function testRetornaErroAoBuscarReceitaPorIdQueNaoExiste()
     {
         Revenue::factory()->count(10)->create();
-        $this->get(route('expense.show', ['id' => 11]));
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.show', ['id' => 11]), $header);
 
         $this->assertResponseStatus(204);
     }
@@ -84,7 +140,17 @@ class RevenueControllerTeste extends TestCase
     public function testRetornaErroAoBuscarRecitaPorIdQueNaoExiste()
     {
         Revenue::factory()->count(10)->create();
-        $this->get(route('revenue.show', ['id' => 11]));
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('revenue.show', ['id' => 11]), $header);
 
         $this->assertResponseStatus(204);
     }
@@ -94,7 +160,16 @@ class RevenueControllerTeste extends TestCase
         Revenue::factory()->count(2)->create();
         $revenue = Revenue::find(2);
 
-        $this->get(route('revenue.show', ['id' => 2]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('revenue.show', ['id' => 2]), $header);
 
         $show = $this->response->content();
 
@@ -106,7 +181,16 @@ class RevenueControllerTeste extends TestCase
     {
         Revenue::factory()->create();
 
-        $this->delete(route('revenue.destroy', ['id' => 2]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->delete(route('revenue.destroy', ['id' => 2]), [], $header);
 
         $this->assertResponseStatus(404);
         $this->seeJson(["error" => "Receita não encontrada!"]);
@@ -116,7 +200,16 @@ class RevenueControllerTeste extends TestCase
     {
         Revenue::factory()->create();
 
-        $this->delete(route('revenue.destroy', ['id' => 1]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->delete(route('revenue.destroy', ['id' => 1]), [], $header);
 
         $this->assertResponseStatus(200);
         $this->seeJson(["success" => "Receita removida com sucesso!"]);
@@ -124,10 +217,19 @@ class RevenueControllerTeste extends TestCase
 
     public function testRetornaMensagensDeErroDasValidacoesAoCadastrar()
     {
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
         $this->post(route('revenue.store'), [
             'value' => 120,
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ['Por favor. Informe a descrição da receita!']]);
@@ -135,7 +237,7 @@ class RevenueControllerTeste extends TestCase
         $this->post(route('revenue.store'), [
             'description' => 'Receita Teste',
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["value" => ['Por favor. Informe o valor da receita!']]);
@@ -143,7 +245,7 @@ class RevenueControllerTeste extends TestCase
         $this->post(route('revenue.store'), [
             'description' => 'Receita Teste',
             'value' => '120'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["date" => ['Por favor. Informe a data da receita!']]);
@@ -152,13 +254,13 @@ class RevenueControllerTeste extends TestCase
             'description' => 'Receita Teste',
             'date' => '2022-01-01',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->post(route('revenue.store'), [
             'description' => 'Receita Teste',
             'date' => '2022-01-31',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ["Descrição já cadatrada para o mês informado!"]]);
@@ -172,7 +274,16 @@ class RevenueControllerTeste extends TestCase
             'date' => '2022-01-01'
         ];
 
-        $this->post(route('revenue.store'), $payload);
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->post(route('revenue.store'), $payload, $header);
         $this->assertResponseStatus(201);
         $this->seeJson(Revenue::find(1)->toArray());
     }
@@ -182,18 +293,26 @@ class RevenueControllerTeste extends TestCase
 
         Revenue::factory()->count(2)->create();
 
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
 
         $this->put(route('revenue.update', ['id' => 1]), [
             'value' => 120,
             'date' => '2022-12-12'
-        ]);
+        ], $header);
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ['Por favor. Informe a descrição da receita!']]);
 
         $this->put(route('revenue.update', ['id' => 1]), [
             'description' => 'Receita Teste',
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["value" => ['Por favor. Informe o valor da receita!']]);
@@ -201,7 +320,7 @@ class RevenueControllerTeste extends TestCase
         $this->put(route('revenue.update', ['id' => 1]), [
             'description' => 'Receita Teste',
             'value' => '120'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["date" => ['Por favor. Informe a data da receita!']]);
@@ -210,13 +329,13 @@ class RevenueControllerTeste extends TestCase
             'description' => 'Receita Teste',
             'date' => '2022-01-01',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->put(route('revenue.update', ['id' => 2]), [
             'description' => 'Receita Teste',
             'date' => '2022-1-31',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ["Descrição já cadatrada para o mês informado!"]]);
@@ -224,7 +343,16 @@ class RevenueControllerTeste extends TestCase
 
     public function testRetornaMensagemDeErroAoEditarReceitaComIdQueNaoExiste()
     {
-        $this->put(route('revenue.update', ['id' => 1]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->put(route('revenue.update', ['id' => 1]), [], $header);
 
         $this->assertResponseStatus(404);
         $this->seeJson(["error" => "Receita não encontrada!"]);
@@ -239,7 +367,16 @@ class RevenueControllerTeste extends TestCase
             'date' => '2021-12-01'
         ];
 
-        $this->put(route('revenue.update', ['id' => $revenue->id]), $payload);
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->put(route('revenue.update', ['id' => $revenue->id]), $payload, $header);
 
         $this->assertResponseOk();
         $this->seeJson($payload);

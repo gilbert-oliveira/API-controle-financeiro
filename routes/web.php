@@ -43,6 +43,6 @@ $router->group(['middleware' => 'authenticator'], function () use ($router) {
     $router->get('resumo/{year}/{month}', ['as' => 'resume', 'uses' => 'ResumeController@index']);
 });
 
-$router->post('login', 'TokenController@generateToken');
+$router->post('login', ['as' => 'login', 'uses' => 'TokenController@generateToken']);
 
-$router->post('register', 'RegisterController@register');
+$router->post('register', ['as' => 'register', 'uses' => 'RegisterController@register']);

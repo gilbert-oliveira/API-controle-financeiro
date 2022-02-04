@@ -19,7 +19,17 @@ class ExpenseControllerTeste extends TestCase
     {
         Expense::factory()->count(10)->create();
 
-        $this->get(route('expense.index'));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.index'), $header);
+
         $expenses = Expense::all();
 
         $index = $this->response->content();
@@ -36,7 +46,16 @@ class ExpenseControllerTeste extends TestCase
         $sub = substr(Expense::find(2)->description, 0, 3);
         $resources = Expense::where('description', 'like', "%{$sub}%")->get();
 
-        $this->get("/despesas?descricao={$sub}");
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get("/despesas?descricao={$sub}", $header);
         $this->assertResponseOk();
         $this->assertEquals(json_decode($resources), json_decode($this->response->content()));
     }
@@ -44,7 +63,17 @@ class ExpenseControllerTeste extends TestCase
     public function testRetornaSemConteudoAoBuscarDespesaPorDescricaoQueNaoExiste()
     {
         Expense::factory()->count(10)->create();
-        $this->get("/despesas?descricao=abc123");
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get("/despesas?descricao=abc123", $header);
 
         $this->assertResponseStatus(204);
     }
@@ -63,7 +92,17 @@ class ExpenseControllerTeste extends TestCase
         ]);
 
         $expected = Expense::where('date', '2022-11-01')->get();
-        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '11']));
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '11']), $header);
 
         $this->assertResponseOk();
         $this->assertEquals($this->response->content(), $expected);
@@ -71,14 +110,33 @@ class ExpenseControllerTeste extends TestCase
 
     public function testRetornaSemConteudoAoBuscarDespesaPorAnoEMesQueNaoExiste()
     {
-        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '12']));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.show-by-month', ['year' => '2022', 'month' => '12']), $header);
         $this->assertResponseStatus(204);
     }
 
     public function testRetornaErroAoBuscarDespesaPorIdQueNaoExiste()
     {
         Expense::factory()->count(10)->create();
-        $this->get(route('expense.show', ['id' => 11]));
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.show', ['id' => 11]), $header);
 
         $this->assertResponseStatus(204);
     }
@@ -88,7 +146,16 @@ class ExpenseControllerTeste extends TestCase
         Expense::factory()->count(2)->create();
         $expense = Expense::find(2);
 
-        $this->get(route('expense.show', ['id' => 2]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->get(route('expense.show', ['id' => 2]), $header);
 
         $show = $this->response->content();
 
@@ -100,7 +167,16 @@ class ExpenseControllerTeste extends TestCase
     {
         Expense::factory()->create();
 
-        $this->delete(route('expense.destroy', ['id' => 2]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->delete(route('expense.destroy', ['id' => 2]), [], $header);
 
         $this->assertResponseStatus(404);
         $this->seeJson(["error" => "Despesa não encontrada!"]);
@@ -110,7 +186,16 @@ class ExpenseControllerTeste extends TestCase
     {
         Expense::factory()->create();
 
-        $this->delete(route('expense.destroy', ['id' => 1]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->delete(route('expense.destroy', ['id' => 1]), [], $header);
 
         $this->assertResponseStatus(200);
         $this->seeJson(["success" => "Despesa removida com sucesso!"]);
@@ -118,10 +203,20 @@ class ExpenseControllerTeste extends TestCase
 
     public function testRetornaMensagensDeErroDasValidacoesAoCadastrar()
     {
+
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
         $this->post(route('expense.store'), [
             'value' => 120,
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ['Por favor. Informe a descrição da despesa!']]);
@@ -129,7 +224,7 @@ class ExpenseControllerTeste extends TestCase
         $this->post(route('expense.store'), [
             'description' => 'Despesa Teste',
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["value" => ['Por favor. Informe o valor da despesa!']]);
@@ -137,7 +232,7 @@ class ExpenseControllerTeste extends TestCase
         $this->post(route('expense.store'), [
             'description' => 'Despesa Teste',
             'value' => '120'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["date" => ['Por favor. Informe a data da despesa!']]);
@@ -146,13 +241,13 @@ class ExpenseControllerTeste extends TestCase
             'description' => 'Despesa Teste',
             'date' => '2022-01-01',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->post(route('expense.store'), [
             'description' => 'Despesa Teste',
             'date' => '2022-01-31',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ["Descrição já cadatrada para o mês informado!"]]);
@@ -167,7 +262,16 @@ class ExpenseControllerTeste extends TestCase
             'category_id' => 1
         ];
 
-        $this->post(route('expense.store'), $payload);
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->post(route('expense.store'), $payload, $header);
 
         $this->assertResponseStatus(201);
         $this->seeJson(Expense::find(1)->toArray());
@@ -177,17 +281,27 @@ class ExpenseControllerTeste extends TestCase
     {
         Expense::factory()->count(2)->create();
 
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
         $this->put(route('expense.update', ['id' => 1]), [
             'value' => 120,
             'date' => '2022-12-12'
-        ]);
+        ], $header);
+
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ['Por favor. Informe a descrição da despesa!']]);
 
         $this->put(route('expense.update', ['id' => 1]), [
             'description' => 'Despesa Teste',
             'date' => '2022-12-12'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["value" => ['Por favor. Informe o valor da despesa!']]);
@@ -195,7 +309,7 @@ class ExpenseControllerTeste extends TestCase
         $this->put(route('expense.update', ['id' => 1]), [
             'description' => 'Despesa Teste',
             'value' => '120'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["date" => ['Por favor. Informe a data da despesa!']]);
@@ -204,7 +318,7 @@ class ExpenseControllerTeste extends TestCase
             'description' => 'Despesa Teste',
             'date' => '2022-13-01',
             'value' => '120'
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["date" => ['Por favor. Informe uma data no formato Y-m-d!']]);
@@ -213,13 +327,13 @@ class ExpenseControllerTeste extends TestCase
             'description' => 'Despesa Teste',
             'date' => '2022-01-01',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->put(route('expense.update', ['id' => 2]), [
             'description' => 'Despesa Teste',
             'date' => '2022-1-31',
             'value' => 120
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["description" => ["Descrição já cadatrada para o mês informado!"]]);
@@ -229,7 +343,7 @@ class ExpenseControllerTeste extends TestCase
             'date' => '2022-5-20',
             'value' => 120,
             'category_id' => 9
-        ]);
+        ], $header);
 
         $this->assertResponseStatus(422);
         $this->seeJson(["category_id" => ["Por favor. Informe uma categoria válida!"]]);
@@ -237,7 +351,16 @@ class ExpenseControllerTeste extends TestCase
 
     public function testRetornaMensagemDeErroAoEditarDespesaComIdQueNaoExiste()
     {
-        $this->put(route('expense.update', ['id' => 1]));
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->put(route('expense.update', ['id' => 1]), [], $header);
 
         $this->assertResponseStatus(404);
         $this->seeJson(["error" => "Despesa não encontrada!"]);
@@ -252,7 +375,16 @@ class ExpenseControllerTeste extends TestCase
             'date' => '2021-12-01'
         ];
 
-        $this->put(route('expense.update', ['id' => $expense->id]), $payload);
+        $payloadUser = [
+            'name' => 'Usuário Teste',
+            'email' => 'contato@gilbert.dev.br',
+            'password' => 12345678
+        ];
+        $this->post(route('register', $payloadUser));
+        $token = json_decode($this->response->content())->access_token;
+        $header = ['HTTP_Authorization' => "Bearer $token"];
+
+        $this->put(route('expense.update', ['id' => $expense->id]), $payload, $header);
 
         $this->assertResponseOk();
         $this->seeJson($payload);

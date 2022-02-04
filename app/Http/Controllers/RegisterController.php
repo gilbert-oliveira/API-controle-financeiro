@@ -14,19 +14,22 @@ class RegisterController extends Controller
 
         $this->validate($request, [
             'password' => [
-                'bail',
                 'required'
             ],
             'email' => [
-                'bail',
                 'required',
-                'unique:users,email',
-                'email'
+                'email',
+                'unique:users,email'
             ],
             'name' => [
-                'bail',
                 'required'
             ]
+        ], [
+            'password.required' => 'Por favor. Informe uma senha!',
+            'email.required' => 'Por favor. Informe um e-mail!',
+            'email.email' => 'Por favor. Informe um e-mail válido!',
+            'email.unique' => 'E-mail já cadastrado. Infome outro!',
+            'name.required' => 'Por favor. Informe um nome!'
         ]);
 
         $dados = $request->all();

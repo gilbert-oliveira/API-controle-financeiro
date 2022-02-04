@@ -110,6 +110,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 |
 */
 
+$app->withFacades(['Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class]);
+
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {

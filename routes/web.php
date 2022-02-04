@@ -3,10 +3,7 @@
 use Laravel\Lumen\Routing\Router;
 
 /** @var Router $router */
-$router->get('/', function () use ($router) {
-//    return $router->app->version();
-    return $router->app->version();
-});
+$router->get('/', ['as' => 'readme', 'uses' => 'ReadmeController@index']);
 
 $router->group(['middleware' => 'authenticator'], function () use ($router) {
     /**

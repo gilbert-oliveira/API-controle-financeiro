@@ -61,6 +61,7 @@ class RegisterControllerTeste extends TestCase
 
         $this->post(route('register', $payload));
 
+        $this->assertResponseStatus(201);
         $this->assertArrayHasKey('access_token', ((array)json_decode($this->response->content())));
     }
 }

@@ -1,6 +1,6 @@
 # API Controle Financeiro Alura
 
-![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=dark&style=for-the-badge)
+![Badge Produção](http://img.shields.io/static/v1?label=STATUS&message=PRODUÇÃO&color=dark&style=for-the-badge)
 ![Badge versão do php](https://img.shields.io/static/v1?label=PHP&message=8.0.14&color=blue&style=for-the-badge&logo=php)
 ![Badge versão do php](https://img.shields.io/static/v1?label=MYSQL&message=8.0.27&color=blue&style=for-the-badge&logo=mysql)
 ![Badge versão do php](https://img.shields.io/static/v1?label=LUMEN&message=8.0.14&color=orange&style=for-the-badge&logo=lumen)
@@ -9,6 +9,12 @@
 ## Objetivo
 
 Criar uma API Rest que faça o controle de Receitas e Despesas e gere relatório para controle finaneiro pessoal.
+
+## Demonstração
+
+Para testar as funcionalidades da api poderá ser utilizado o
+link <a heref="http://finances-control-api.gilbert.dev.br">http://finances-control-api.gilbert.dev.br </a> segunido os
+padrões de endpoints da documentação!
 
 ## Dúvidas/Contato
 
@@ -79,6 +85,86 @@ As requisições para a API devem seguir os padrões:
 
 ***
 
+## Cadatro de usuário [/register]
+
+Para o cadastro é necessário:
+
+- Nome do usuário.
+- E-mail do usuário.
+- Senha do usuário.
+
+### Cadastrar [POST]
+
++ API endopint
+    + `register`
++ Request (/application/json)
+    + Body
+        ```json
+        {
+          "name": "Nome do usuário.",
+          "email": "Email do usuário.",
+          "password": "Senha do usuário."
+        }
+        ```
++ Response 201 (application/json) <br/>
+    ```json
+    {
+      "access_token": "Token JWT"
+    }
+    ```
++ Response 422 (application/json) <br/>
+    ```json
+    {
+      "campo": [
+        "Validação no qual o request não aprovou.",
+        "Validação no qual o request não aprovou."
+      ],
+      "OutroCampo": [
+        "Validação no qual o request não aprovou.",
+        "Validação no qual o request não aprovou."
+      ]
+    }
+    ```
+
+## Login de usuário [/login]
+
+Para o login é necessário:
+
+- E-mail do usuário.
+- Senha do usuário.
+
+### Login [POST]
+
++ API endopint
+    + `login`
++ Request (/application/json)
+    + Body
+        ```json
+        {
+          "email": "Email do usuário.",
+          "password": "Senha do usuário."
+        }
+        ```
++ Response 200 (application/json) <br/>
+    ```json
+    {
+      "access_token": "Token JWT"
+    }
+    ```
++ Response 422 (application/json) <br/>
+    ```json
+    {
+      "campo": [
+        "Validação no qual o request não aprovou.",
+        "Validação no qual o request não aprovou."
+      ],
+      "OutroCampo": [
+        "Validação no qual o request não aprovou.",
+        "Validação no qual o request não aprovou."
+      ]
+    }
+    ```
+
 ## Receitas [/receitas]
 
 As receitas são todos os ganhos com aplicações financeiras ou qualquer rendimento.
@@ -87,6 +173,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     [
@@ -109,6 +198,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Request (/application/json)
     + Body
         ```json
@@ -145,6 +237,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas/{ano}/{mes}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     [
@@ -169,6 +264,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     {
@@ -185,6 +283,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Request (/application/json)
     + Body
       ```json
@@ -226,6 +327,9 @@ As receitas são todos os ganhos com aplicações financeiras ou qualquer rendim
 
 + API endopint
     + `receitas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     {
@@ -247,6 +351,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     [
@@ -269,6 +376,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Request (/application/json)
     + Body
         ```json
@@ -305,6 +415,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas/{ano}/{mes}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     [
@@ -329,6 +442,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     {
@@ -345,6 +461,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Request (/application/json)
     + Body
       ```json
@@ -386,6 +505,9 @@ As despesas são todos os gastos com aplicações financeiras ou qualquer outro 
 
 + API endopint
     + `despesas/{id}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     {
@@ -412,6 +534,9 @@ O resumo do mês contem as seguintes informações:
 
 + API endopint
     + `despesas/{ano}/{mes}`
++ headers
+    + Authorization
+        + `"Bearer <Inserir o JWT Token>"`
 + Response 200 (application/json) <br/>
     ```json
     {
